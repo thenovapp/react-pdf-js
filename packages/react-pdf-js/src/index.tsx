@@ -11,7 +11,7 @@ type PDFRenderTask = ReturnType<PDFPageProxy['render']>;
 
 type HookProps = {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
-  file: string;
+  externalConfig ?: DocumentInitParameters;
   onDocumentLoadSuccess?: (document: PDFDocumentProxy) => void;
   onDocumentLoadFail?: () => void;
   onPageLoadSuccess?: (page: PDFPageProxy) => void;
@@ -34,7 +34,7 @@ type HookReturnValues = {
 
 export const usePdf = ({
   canvasRef,
-  file,
+  externalConfig = {},
   onDocumentLoadSuccess,
   onDocumentLoadFail,
   onPageLoadSuccess,
@@ -89,7 +89,7 @@ export const usePdf = ({
   }, [workerSrc]);
 
   useEffect(() => {
-    const config: DocumentInitParameters = { url: file, withCredentials };
+    const config: DocumentInitParameters = { ...externalConfig };
     if (cMapUrl) {
       config.cMapUrl = cMapUrl;
       config.cMapPacked = cMapPacked;
@@ -109,7 +109,7 @@ export const usePdf = ({
         }
       }
     );
-  }, [file, withCredentials, cMapUrl, cMapPacked]);
+  }, [externalConfig, withCredentials, cMapUrl, cMapPacked]);
 
   useEffect(() => {
     // draw a page of the pdf
